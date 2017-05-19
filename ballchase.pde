@@ -10,6 +10,7 @@
  */
  
 import SimpleOpenNI.*;
+import java.awt.*;
 
 
 SimpleOpenNI context;
@@ -23,12 +24,12 @@ PVector      bodyCenter = new PVector();
 PVector      bodyDir = new PVector();
 PVector      com = new PVector();                                   
 PVector      com2d = new PVector();                                   
-color[]       userClr = new color[]{ color(255,255,255),
-                                     color(0,0,255),
-                                     color(0,255,0),
-                                     color(255,255,0),
-                                     color(255,0,255),
-                                     color(0,255,255)
+color[]       userClr = new color[]{ 
+                                     color(100,255,255),
+                                     color(255,255,100),
+                                     color(255,100,255),
+                                     color(150,150,255),
+                                     color(255,150,150)
                                    };
 
 ArrayList <Mover> bouncers;
@@ -37,6 +38,13 @@ boolean transparentBG = true;
 boolean transkey;
 boolean mousebew;
 float righthandX, righthandY;
+
+void init(){
+  frame.removeNotify();
+  frame.setUndecorated(true);
+  frame.addNotify();
+  super.init();
+}
 
 
 
@@ -47,10 +55,11 @@ void setup()
   textSize(25);
   
   
-  righthandX = 500;
-  righthandY = 500;
+  righthandX = width/2;
+  righthandY = height/2;
   
-  size(1024,768,P3D);  // strange, get drawing error in the cameraFrustum if i use P3D, in opengl there is no problem
+  size(displayWidth,displayHeight,P3D);  // strange, get drawing error in the cameraFrustum if i use P3D, in opengl there is no problem
+  frame.setLocation(0,0);
   smooth();
   
   bouncers = new ArrayList();
@@ -91,29 +100,17 @@ void setup()
 void draw()
 {
   
-  if(bewegungsModus == 0){
-    background(#57385c);
-  }else if(bewegungsModus ==1 ){
-    background(#556b2f);
-  }else if(bewegungsModus == 2){
-    background(#483d8b);
-  }else if(bewegungsModus == 3 ){
-    background(#4682b4);
-  }else{
-    background(#8b4513);
-  }
-  
   fill(255, 255, 255);
   if(bewegungsModus == 0){
-    text("0 : bouncing ball", 600, 200);
+    text("0 : bouncing ball", 1000, 200);
   }else if(bewegungsModus == 1){
-    text("1 : noise", 600, 200);
+    text("1 : noise", 1000, 200);
   }else if(bewegungsModus == 2){
-    text("2 : steer", 600, 200);
+    text("2 : steer", 1000, 200);
   }else if(bewegungsModus == 3){
-    text("3 : seek", 600, 200);
+    text("3 : seek", 1000, 200);
   }else {
-    text("4 : radial", 600, 200);
+    text("4 : radial", 1000, 200);
   }
   
   //text(bewegungsModus, 800, 200);
@@ -160,7 +157,7 @@ void draw()
       { 
         // draw the projected point
         realWorldPoint = context.depthMapRealWorld()[index];
-        strokeWeight(10);
+        strokeWeight(2);
         if(userMap[index] == 0)
           stroke(100); 
         else
@@ -181,15 +178,15 @@ void drawballs(){
    // fill (#57385c, 40);
     noStroke();
     if(bewegungsModus == 0){
-      fill(#57385c,40);
+      fill(#57385c,60);  //navy
     }else if(bewegungsModus ==1 ){
-      fill(#556b2f,40);
+      fill(#008b8b,60);  
     }else if(bewegungsModus == 2){
-      fill(#483d8b,40);
+      fill(#483d8b,60);  //blue
     }else if(bewegungsModus == 3 ){
-      fill(#4682b4,40);
+      fill(#8b008b,60);  //purple
     }else{
-      fill(#8b4513,40);
+      fill(#8b4513,60);   //brown
     }
     rect (0, 0, width, height);
   } 
@@ -215,7 +212,6 @@ void drawballs(){
 void checkkeys(){
 //  int righthand = SimpleOpenNI.SKEL_RIGHT_HAND;
 //  print(righthand);
-  
   mousebew = false;
   
   int[] userList = context.getUsers();
@@ -228,18 +224,22 @@ void checkkeys(){
       context.getJointPositionSkeleton(userList[i], SimpleOpenNI.SKEL_RIGHT_HAND, righthand_PV);
       context.getJointPositionSkeleton(userList[i], SimpleOpenNI.SKEL_LEFT_HAND, lefthand_PV);
       context.getJointPositionSkeleton(userList[i], SimpleOpenNI.SKEL_HEAD, head_PV);
+      //print(1);     
       if ( lefthand_PV == null || head_PV == null){
-        print("null");
+        //print("null");
       }else{
+        //print( lefthand_PV.y );
+        //print( head_PV.y );
         if ( lefthand_PV.y > head_PV.y ){
           mousebew = true;
-          delay(1000);
+          delay(700);
+          //print("left>head");
         }
       }
       
-      if ( righthand_PV == null){}else{
-        righthandX = ( righthand_PV.x + width/2 );
-        righthandY = - ( righthand_PV.y - height/2 );
+      if ( righthand_PV == null){} else {
+        righthandX = ( righthand_PV.x /4  + width /2  );
+        righthandY = - ( righthand_PV.y /4  - height/2 );
       }
     }
   }
@@ -270,10 +270,24 @@ void mousebew()
   if (mousebew == true)
   {
     bewegungsModus++;
-    if (bewegungsModus > 5)
+    
+    if (bewegungsModus > 4)
     {
       bewegungsModus = 0;
     }
+    
+    if(bewegungsModus == 0){
+      background(#57385c);  //navy
+    }else if(bewegungsModus ==1 ){
+      background(#008b8b);  //dark green
+    }else if(bewegungsModus == 2){
+      background(#483d8b);  //blue
+    }else if(bewegungsModus == 3 ){
+      background(#8b008b);  //purple
+    }else{
+      background(#8b4513); //brown
+    }
+    
   }
 }
 
@@ -814,12 +828,12 @@ class Mover
       direction.x *= -1;
     }
 
-    if (location.y < radius )
+    if (location.y  < radius )
     {
       location.y = radius ;
       direction.y *= -1;
     }
-    else if (location.y > height-radius )
+    else if (location.y  > height-radius )
     {
       location.y = height-radius ;
       direction.y *= -1;
