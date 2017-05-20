@@ -39,6 +39,8 @@ boolean transkey;
 boolean mousebew;
 float righthandX, righthandY;
 
+int frame;
+
 void init(){
   frame.removeNotify();
   frame.setUndecorated(true);
@@ -51,6 +53,7 @@ void init(){
 void setup()
 {
   
+  frame = 0;
   
   textSize(25);
   
@@ -100,18 +103,20 @@ void setup()
 void draw()
 {
   
-  fill(255, 255, 255);
-  if(bewegungsModus == 0){
-    text("0 : bouncing ball", 1000, 200);
-  }else if(bewegungsModus == 1){
-    text("1 : noise", 1000, 200);
-  }else if(bewegungsModus == 2){
-    text("2 : steer", 1000, 200);
-  }else if(bewegungsModus == 3){
-    text("3 : seek", 1000, 200);
-  }else {
-    text("4 : radial", 1000, 200);
-  }
+  
+  
+//  fill(255, 255, 255);
+//  if(bewegungsModus == 0){
+//    text("0 : bouncing ball", 1000, 200);
+//  }else if(bewegungsModus == 1){
+//    text("1 : noise", 1000, 200);
+//  }else if(bewegungsModus == 2){
+//    text("2 : steer", 1000, 200);
+//  }else if(bewegungsModus == 3){
+//    text("3 : seek", 1000, 200);
+//  }else {
+//    text("4 : radial", 1000, 200);
+//  }
   
   //text(bewegungsModus, 800, 200);
 
@@ -168,8 +173,19 @@ void draw()
     } 
   }
   endShape();
+  
+  frame = frame + 1;
 
 }
+
+void addkey(){
+  if( frame % 100 = 0 ){
+    mousebew = true;
+  }else{
+    mousebew = false;
+  }
+}
+
 
 void drawballs(){
   if (transparentBG)
@@ -212,7 +228,7 @@ void drawballs(){
 void checkkeys(){
 //  int righthand = SimpleOpenNI.SKEL_RIGHT_HAND;
 //  print(righthand);
-  mousebew = false;
+  //mousebew = false;
   
   int[] userList = context.getUsers();
   
@@ -231,8 +247,8 @@ void checkkeys(){
         //print( lefthand_PV.y );
         //print( head_PV.y );
         if ( lefthand_PV.y > head_PV.y ){
-          mousebew = true;
-          delay(700);
+//          mousebew = true;
+//          delay(700);
           //print("left>head");
         }
       }
